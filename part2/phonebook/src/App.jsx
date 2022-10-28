@@ -7,8 +7,8 @@ const App = () => {
   const [nameFilter, setNewNameFilter] = useState('');
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
-
   const [persons, setPersons] = useState([]);
+  const [message, setMessage] = useState(null);
 
   const shownPersons = persons.filter(({ name }) => {
     return name.toLowerCase().includes(nameFilter.toLowerCase());
@@ -22,11 +22,12 @@ const App = () => {
 
     const existingUser = findPersonByName(newName);
 
-    if (existingUser) {
+    if (
+      existingUser &&
       confirm(
         `${existingUser.name} is already added to phonebook, replace the old number with a new one?`
-      );
-
+      )
+    ) {
       await updateNumber(existingUser, newNumber);
     } else {
       await addPerson();
@@ -36,13 +37,30 @@ const App = () => {
   };
 
   const updateNumber = async (person, number) => {
-    const newPerson = await personsService.update(person.id, {
-      ...person,
-      number,
-    });
-    setPersons(
-      persons.map((_person) => (_person.id === person.id ? newPerson : _person))
-    );
+    try {
+      const newPerson = await personsService.update(person.id, {
+        ...person,
+        number,
+      });
+
+      setPersons(
+        persons.map((_person) =>
+          _person.id === person.id ? newPerson : _person
+        )
+      );
+    } catch (error) {
+      if (error.response.status === 404) {
+        displayNotification(
+          `Information of ${person.name} has already been removed from server`,
+          'error'
+        );
+      }
+    }
+  };
+
+  const displayNotification = (text, type) => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage(null), 5000);
   };
 
   const addPerson = async () => {
@@ -54,13 +72,15 @@ const App = () => {
     const newPerson = await personsService.add(data);
 
     setPersons(persons.concat(newPerson));
+
+    displayNotification(`Added ${newName}`, 'success');
   };
 
   const deletePerson = async (id, name) => {
-    confirm(`Delete ${name}?`);
-    await personsService.remove(id);
-
-    setPersons(persons.filter((person) => person.id !== id));
+    if (confirm(`Delete ${name}?`)) {
+      await personsService.remove(id);
+      setPersons(persons.filter((person) => person.id !== id));
+    }
   };
 
   const resetForm = () => {
@@ -76,6 +96,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter name={nameFilter} onNewNameFilter={setNewNameFilter} />
 
       <h3>add a new</h3>
@@ -137,5 +158,13 @@ const Person = ({ person, onDelete }) => (
     <button onClick={onDelete}>delete</button>
   </div>
 );
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null;
+  }
+
+  return <div className={`notification ${message.type}`}>{message.text}</div>;
+};
 
 export default App;

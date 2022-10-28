@@ -1,24 +1,14 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "1234",
-      "id": 1
+      "name": "Another one",
+      "number": "123432465",
+      "id": 10
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": 4
-    },
-    {
-      "name": "test",
-      "number": "125346",
-      "id": 6
-    },
-    {
-      "name": "Ethan",
-      "number": "testing...",
-      "id": 7
+      "name": "Ethan testing...",
+      "number": "New num",
+      "id": 11
     }
   ]
 }
