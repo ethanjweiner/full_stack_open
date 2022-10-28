@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
-import axios from 'axios';
+import personsService from './services/persons';
 
 const App = () => {
   // State
@@ -14,41 +14,63 @@ const App = () => {
     return name.toLowerCase().includes(nameFilter.toLowerCase());
   });
 
-  const handleSubmit = (e) => {
+  const findPersonByName = (name) =>
+    persons.find((person) => name === person.name);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isDuplicateName(newName)) {
-      alert(`${newName} is already added to phonebook`);
-      return;
+    const existingUser = findPersonByName(newName);
+
+    if (existingUser) {
+      confirm(
+        `${existingUser.name} is already added to phonebook, replace the old number with a new one?`
+      );
+
+      await updateNumber(existingUser, newNumber);
+    } else {
+      await addPerson();
     }
 
-    addPerson();
+    resetForm();
   };
 
-  const isDuplicateName = (name) => {
-    return !!persons.find((person) => name === person.name);
+  const updateNumber = async (person, number) => {
+    const newPerson = await personsService.update(person.id, {
+      ...person,
+      number,
+    });
+    setPersons(
+      persons.map((_person) => (_person.id === person.id ? newPerson : _person))
+    );
   };
 
-  const addPerson = () => {
-    const newPerson = {
+  const addPerson = async () => {
+    const data = {
       name: newName,
       number: newNumber,
     };
 
+    const newPerson = await personsService.add(data);
+
     setPersons(persons.concat(newPerson));
-    resetState();
   };
 
-  const resetState = () => {
+  const deletePerson = async (id, name) => {
+    confirm(`Delete ${name}?`);
+    await personsService.remove(id);
+
+    setPersons(persons.filter((person) => person.id !== id));
+  };
+
+  const resetForm = () => {
     setNewName('');
     setNewNumber('');
   };
 
-  // Retrieve persons
+  // Load persons on initial component render
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then(({ data }) => {
-      setPersons(data);
-    });
+    personsService.getAll().then(setPersons);
   }, []);
 
   return (
@@ -66,7 +88,7 @@ const App = () => {
       />
 
       <h3>Numbers</h3>
-      <Persons persons={shownPersons} />
+      <Persons persons={shownPersons} onDelete={deletePerson} />
     </div>
   );
 };
@@ -100,12 +122,19 @@ const PersonForm = ({
   </form>
 );
 
-const Persons = ({ persons }) =>
-  persons.map((person) => <Person key={person.name} person={person} />);
+const Persons = ({ persons, onDelete }) =>
+  persons.map((person) => (
+    <Person
+      key={person.id}
+      person={person}
+      onDelete={() => onDelete(person.id, person.name)}
+    />
+  ));
 
-const Person = ({ person }) => (
+const Person = ({ person, onDelete }) => (
   <div>
     {person.name} {person.number}
+    <button onClick={onDelete}>delete</button>
   </div>
 );
 
