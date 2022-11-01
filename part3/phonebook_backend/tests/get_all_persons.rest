@@ -1,0 +1,41 @@
+@hostname = http://localhost
+@port = {{$dotenv BACKEND_PORT}}
+@host = {{hostname}}:{{port}}
+
+### Get all persons
+GET {{host}}/api/persons
+
+### Get one person
+GET {{host}}/api/persons/1
+
+### Get invalid person
+GET {{host}}/api/persons/-1
+
+### Delete one person
+DELETE {{host}}/api/persons/2
+
+### Add a person
+POST {{host}}/api/persons
+Content-Type: application/json
+
+{
+  "name": "Ethan Weiner",
+  "number": "123-123-1234"
+}
+
+### Missing number
+POST {{host}}/api/persons
+Content-Type: application/json
+
+{
+  "name": "Ethan Weiner"
+}
+
+### Taken name
+POST {{host}}/api/persons
+Content-Type: application/json
+
+{
+  "name": "Ada Lovelace",
+  "number": "123-123-1234"
+}
