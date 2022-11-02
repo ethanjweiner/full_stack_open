@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "debug": "nodemon --inspect index.js",
     "build": "",
     "build:ui": "rm -rf ./build && cd ../frontend && npm run build && cp -r dist ../backend",
     "deploy": "fly deploy",
