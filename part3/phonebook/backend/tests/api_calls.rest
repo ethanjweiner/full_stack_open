@@ -1,6 +1,6 @@
 @hostname = http://localhost
-@port = {{$dotenv BACKEND_PORT}}
-@host = {{hostname}}:{{port}}
+@port = 3001
+@host = {{hostname}}
 
 ### Get all persons
 GET {{host}}/api/persons

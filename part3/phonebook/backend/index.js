@@ -14,6 +14,9 @@ const logger = morgan(
 );
 app.use(logger);
 
+// Serve static files
+app.use(express.static('dist'));
+
 let persons = [
   {
     id: 1,
@@ -96,8 +99,9 @@ app.post('/api/persons', (request, response) => {
   response.json(person);
 });
 
-// Set up server on port
-const PORT = process.env.BACKEND_PORT;
+// Set up server on production/development port
+const PORT = process.env.PORT || 3001;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
