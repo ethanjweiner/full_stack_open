@@ -31,7 +31,15 @@ POST {{host}}/api/persons
 Content-Type: application/json
 
 {
-  "name": "E-Wein-Dog"
+  "name": "E-Wein-Dogs"
+}
+
+### Missing name
+POST {{host}}/api/persons
+Content-Type: application/json
+
+{
+  "number": "12-123423463"
 }
 
 ### Taken name
@@ -61,3 +69,56 @@ Content-Type: application/json
   "number": "999-999-9999"
 }
 
+### Name too short
+POST {{host}}/api/persons
+Content-Type: application/json
+
+{
+  "name": "AC",
+  "number": "123-123-1234"
+}
+
+### Name too short
+PUT {{host}}/api/persons/6362c65e57268c1942c0e7a1
+Content-Type: application/json
+
+{
+  "name": "AB",
+  "number": "123-123-1234"
+}
+
+### Valid phone numbers
+POST {{host}}/api/persons
+Content-Type: application/json
+
+{
+  "name": "Valid Phone #1",
+  "number": "09-1234556"
+}
+
+###
+POST {{host}}/api/persons
+Content-Type: application/json
+
+{
+  "name": "Valid Phone #3",
+  "number": "040-22334455"
+}
+
+### Invalid phone #s
+POST {{host}}/api/persons
+Content-Type: application/json
+
+{
+  "name": "Invalid Phone #",
+  "number": "1234556"
+}
+
+###
+POST {{host}}/api/persons
+Content-Type: application/json
+
+{
+  "name": "Invalid Phone #3",
+  "number": "1234-22334455"
+}

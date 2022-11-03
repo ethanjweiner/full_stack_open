@@ -75,10 +75,6 @@ app.post('/api/persons', (request, response, next) => {
     return next(createHttpError(415));
   }
 
-  if (!body.name || !body.number) {
-    return next(createHttpError(400, `Missing name or number.`));
-  }
-
   Person.find({ name: body.name })
     .then((result) => {
       if (result.length) {
@@ -101,16 +97,15 @@ app.put('/api/persons/:id', (request, response, next) => {
     return next(createHttpError(415));
   }
 
-  if (!body.name || !body.number) {
-    return next(createHttpError(400, `Missing name or number.`));
-  }
-
   const newPerson = {
     name: body.name,
     number: body.number,
   };
 
-  Person.findByIdAndUpdate(request.params.id, newPerson, { new: true })
+  Person.findByIdAndUpdate(request.params.id, newPerson, {
+    new: true,
+    runValidators: true,
+  })
     .then((newPerson) => {
       response.send(newPerson);
     })
@@ -128,6 +123,10 @@ const errorHandler = (error, _, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' });
+  }
+
+  if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.message });
   }
 
   if (error.status) {

@@ -49,12 +49,7 @@ const App = () => {
         )
       );
     } catch (error) {
-      if (error.response.status === 404) {
-        displayNotification(
-          `Information of ${person.name} has already been removed from server`,
-          'error'
-        );
-      }
+      displayNotification(error.response.data.error, 'error');
     }
   };
 
@@ -69,11 +64,13 @@ const App = () => {
       number: newNumber,
     };
 
-    const newPerson = await personsService.add(data);
-
-    setPersons(persons.concat(newPerson));
-
-    displayNotification(`Added ${newName}`, 'success');
+    try {
+      const newPerson = await personsService.add(data);
+      setPersons(persons.concat(newPerson));
+      displayNotification(`Added ${newName}`, 'success');
+    } catch (error) {
+      displayNotification(error.response.data.error, 'error');
+    }
   };
 
   const deletePerson = async (id, name) => {
