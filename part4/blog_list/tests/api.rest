@@ -1,0 +1,16 @@
+@host = http://localhost:{{$dotenv PORT}}
+@root = {{host}}/api/blogs
+
+### Get all blogs
+GET {{root}}
+
+### Add blog
+POST {{root}}
+Content-Type: application/json
+
+{
+  "title": "Test",
+  "author": "Jason",
+  "url": "jason.com",
+  "likes": "0"
+}
