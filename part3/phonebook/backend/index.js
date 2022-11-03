@@ -3,9 +3,23 @@ const express = require('express');
 const morgan = require('morgan');
 const { generateId } = require('./helpers');
 const app = express();
+const mongoose = require('mongoose');
+const Person = require('./models/person');
+const createHttpError = require('http-errors');
+
+// Database Setup
+mongoose
+  .connect(process.env.DATABASE_URI)
+  .then(() => {
+    console.log('Database connected');
+  })
+  .catch((err) => {
+    console.log('Error connecting to MongoDB:', err.message);
+  });
 
 // Middleware
 app.use(express.json());
+
 morgan.token('data', (request) => {
   request.method === 'POST' ? JSON.stringify(request.body) : '';
 });
@@ -17,90 +31,116 @@ app.use(logger);
 // Serve static files
 app.use(express.static('dist'));
 
-let persons = [
-  {
-    id: 1,
-    name: 'Arto Hellas',
-    number: '040-123456',
-  },
-  {
-    id: 2,
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-  },
-  {
-    id: 3,
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-  },
-  {
-    id: 4,
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-  },
-];
+// Routes
+app.get('/info', (_, response, next) => {
+  Person.countDocuments({})
+    .then((count) => {
+      const html = `<p>Phonebook has info for ${count} people</p>
+    <p>${new Date().toString()}</p>
+    `.trim();
 
-app.get('/info', (_, response) => {
-  const html = `
-  <p>Phonebook has info for ${persons.length} people</p>
-  <p>${new Date().toString()}</p>
-  `.trim();
-
-  response.send(html);
+      response.send(html);
+    })
+    .catch(next);
 });
 
 app.get('/api/persons', (_, response) => {
-  response.json(persons);
+  Person.find({}).then((people) => response.json(people));
 });
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = parseInt(request.params.id);
+app.get('/api/persons/:id', (request, response, next) => {
+  const id = request.params.id;
 
-  const person = persons.find((person) => person.id === id);
-
-  if (!person) {
-    return response.status(404).end();
-  }
-
-  response.json(person);
+  Person.findById(id)
+    .then((person) => {
+      response.json(person);
+    })
+    .catch(next);
 });
 
-app.delete('/api/persons/:id', (request, response) => {
-  const id = parseInt(request.params.id);
-  persons = persons.filter((person) => person.id !== id);
-  return response.status(204).end();
+app.delete('/api/persons/:id', (request, response, next) => {
+  const id = request.params.id;
+
+  Person.findByIdAndDelete(id)
+    .then(() => {
+      return response.status(204).end();
+    })
+    .catch(next);
 });
 
-app.post('/api/persons', (request, response) => {
-  if (request.get('Content-Type') !== 'application/json') {
-    return response.status(422).send();
-  }
-
+app.post('/api/persons', (request, response, next) => {
   const body = request.body;
 
+  if (request.get('Content-Type') !== 'application/json') {
+    return next(createHttpError(415));
+  }
+
   if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: 'Missing person name or number',
-    });
+    return next(createHttpError(400, `Missing name or number.`));
   }
 
-  if (persons.find((person) => person.name === body.name)) {
-    return response.status(422).json({
-      error: `The name '${body.name}' is already taken`,
-    });
-  }
+  Person.find({ name: body.name })
+    .then((result) => {
+      if (result.length) {
+        return next(
+          createHttpError(422, `The name '${body.name}' is already taken`)
+        );
+      }
 
-  const person = {
-    id: generateId(),
-    ...body,
-  };
-
-  persons.push(person);
-  response.json(person);
+      const person = new Person(body);
+      return person.save();
+    })
+    .then((person) => response.json(person))
+    .catch(next);
 });
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body;
+
+  if (request.get('Content-Type') !== 'application/json') {
+    return next(createHttpError(415));
+  }
+
+  if (!body.name || !body.number) {
+    return next(createHttpError(400, `Missing name or number.`));
+  }
+
+  const newPerson = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(request.params.id, newPerson, { new: true })
+    .then((newPerson) => {
+      response.send(newPerson);
+    })
+    .catch(next);
+});
+
+const unknownEndpoint = (_, response) => {
+  response.status(404).send({ error: 'unknown API endpoint' });
+};
+
+app.use(unknownEndpoint);
+
+const errorHandler = (error, _, response, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' });
+  }
+
+  if (error.status) {
+    return response.status(error.status).send({ error: error.message });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
+
 // Set up server on production/development port
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

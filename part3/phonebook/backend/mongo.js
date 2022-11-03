@@ -1,7 +1,6 @@
 // Persons Database Interactions
 
 const mongoose = require('mongoose');
-const { generateId } = require('./helpers');
 
 const args = process.argv;
 
@@ -16,8 +15,6 @@ if (args.length < 3) {
 const password = args[2];
 const name = args[3];
 const number = args[4];
-
-const DATABASE_URL = `mongodb+srv://fso-phonebook:${password}@cluster0.zvf6epw.mongodb.net/?retryWrites=true&w=majority`;
 
 // Database logic
 

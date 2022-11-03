@@ -1,25 +1,28 @@
 @hostname = http://localhost
-@port = 3001
-@host = {{hostname}}
+@port = {{$dotenv PORT}}
+@host = {{hostname}}:{{port}}
 
 ### Get all persons
 GET {{host}}/api/persons
 
 ### Get one person
-GET {{host}}/api/persons/1
+GET {{host}}/api/persons/asf2w4362346
 
 ### Get invalid person
-GET {{host}}/api/persons/-1
+GET {{host}}/api/persons/abcdef
 
 ### Delete one person
-DELETE {{host}}/api/persons/2
+DELETE {{host}}/api/persons/6362ffead90cf673f0050f01
+
+### Delete invalid person
+DELETE {{host}}/api/persons/6362
 
 ### Add a person
 POST {{host}}/api/persons
 Content-Type: application/json
 
 {
-  "name": "Ethan Weiner",
+  "name": "E-Wein-Dog",
   "number": "123-123-1234"
 }
 
@@ -28,7 +31,7 @@ POST {{host}}/api/persons
 Content-Type: application/json
 
 {
-  "name": "Ethan Weiner"
+  "name": "E-Wein-Dog"
 }
 
 ### Taken name
@@ -36,6 +39,25 @@ POST {{host}}/api/persons
 Content-Type: application/json
 
 {
-  "name": "Ada Lovelace",
+  "name": "Grace Weiner",
   "number": "123-123-1234"
 }
+
+### Wrong content types
+POST {{host}}/api/persons
+Content-Type: text/plain
+
+{
+  "name": "Test Weiner",
+  "number": "123-123-1234"
+}
+
+### Update number
+PUT {{host}}/api/persons/6362c65e57268c1942c0e7a1
+Content-Type: application/json
+
+{
+  "name": "Lori Weiner",
+  "number": "999-999-9999"
+}
+
