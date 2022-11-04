@@ -48,3 +48,12 @@ Given a list of `blogs`:
 - Iterate over the entries in the `authorBlogCounts`
 - Continually replace a `maxBlogCount` when a new max comes up
 - Return the `maxBlogCount`
+
+## TESTING REQUIREMENTS
+
+- Conditionally set environments w/ scripts X
+- Create a separate database + configure
+- Implement tests themselves in a separate file
+  - Use `supertest` to wrap application
+  - Test that correct amount of blog posts are returned
+  - Test that blog posts are in the JSON format
