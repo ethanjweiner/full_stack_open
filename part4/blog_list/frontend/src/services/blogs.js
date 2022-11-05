@@ -1,9 +1,24 @@
-import axios from 'axios'
-const baseUrl = '/api/blogs'
+import axios from 'axios';
+const baseUrl = '/api/blogs';
+
+let token = null;
+
+const setToken = (newToken) => (token = `bearer ${newToken}`);
 
 const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
-}
+  const request = axios.get(baseUrl);
+  return request.then((response) => response.data);
+};
 
-export default { getAll }
+// Note: If unauthorized, blog creation fails
+const add = async (blogData) => {
+  const response = await axios.post(baseUrl, blogData, {
+    headers: {
+      Authorization: token,
+    },
+  });
+
+  return response.data;
+};
+
+export default { getAll, add, setToken };

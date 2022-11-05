@@ -14,10 +14,18 @@ const loadToken = (request, _, next) => {
 };
 
 const loadUser = async (request, _, next) => {
-  if (!request.token) request.user = null;
+  if (!request.token) {
+    request.user = null;
+    next();
+    return;
+  }
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) request.user = null;
+  if (!decodedToken.id) {
+    request.user = null;
+    next();
+    return;
+  }
 
   request.user = await User.findById(decodedToken.id);
 
