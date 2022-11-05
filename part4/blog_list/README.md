@@ -57,3 +57,10 @@ Given a list of `blogs`:
   - Use `supertest` to wrap application
   - Test that correct amount of blog posts are returned
   - Test that blog posts are in the JSON format
+
+## DATABASE REQUIREMENTS
+
+- One user -> many blogs
+  - Each user should reference any array of blogs
+  - Each blog can reference a user
+- Upon blog creation, a user should bee selected as the creator

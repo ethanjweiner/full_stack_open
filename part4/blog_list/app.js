@@ -1,25 +1,25 @@
 const express = require('express');
+
 const app = express();
 const cors = require('cors');
-const BlogsRouter = require('./controllers/blogs');
-const config = require('./utils/config');
 const mongoose = require('mongoose');
+const BlogsRouter = require('./controllers/blogs');
+const UsersRouter = require('./controllers/users');
+const LoginRouter = require('./controllers/login');
+const config = require('./utils/config');
+const middleware = require('./utils/middleware');
 
 mongoose.connect(config.DATABASE_URI);
 
 app.use(cors());
 app.use(express.json());
+app.use(middleware.loadToken);
+app.use(middleware.loadUser);
 
+app.use('/api/login', LoginRouter);
+app.use('/api/users', UsersRouter);
 app.use('/api/blogs', BlogsRouter);
 
-const errorHandler = (error, _, response, next) => {
-  if (error.name === 'ValidationError') {
-    return response.status(400).send('Invalid input');
-  }
-
-  next(error);
-};
-
-app.use(errorHandler);
+app.use(middleware.errorHandler);
 
 module.exports = app;

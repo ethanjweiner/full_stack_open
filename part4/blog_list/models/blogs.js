@@ -1,27 +1,32 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
 
 const blogSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   author: String,
   url: {
     type: String,
-    required: true
+    required: true,
   },
   likes: {
     type: Number,
     default: 0,
-  }
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 blogSchema.set('toJSON', {
-  // Whenever parsing JSON from blogs, transform _id -> id
   transform: (_, returnedBlog) => {
     returnedBlog.id = returnedBlog._id;
     delete returnedBlog._id;
-  }
+  },
 });
 
 const Blog = mongoose.model('Blog', blogSchema);

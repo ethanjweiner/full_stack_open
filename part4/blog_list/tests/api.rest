@@ -1,16 +1,62 @@
 @host = http://localhost:{{$dotenv PORT}}
-@root = {{host}}/api/blogs
+@blogs_endpoint = {{host}}/api/blogs
+@users_endpoint = {{host}}/api/users
+@login_endpoint = {{host}}/api/login
 
 ### Get all blogs
-GET {{root}}
+GET {{blogs_endpoint}}
 
-### Add blog
-POST {{root}}
+### Valid blog creation
+POST {{blogs_endpoint}}
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImV0aGFud2VpbmVyMjAiLCJpZCI6IjYzNjViYzQ0MDg3NGRhZTI4MmNjOTY2YyIsImlhdCI6MTY2NzY2MjY4NH0.fjG0FTfX8tiGPegFkVE4Xhq45aw4yjHnf2KX8e9ouM4
+
+{
+  "title": "Valid",
+  "author": "Valid",
+  "url": "valid.com",
+  "likes": "3"
+}
+
+### Unauthorized blog creation
+POST {{blogs_endpoint}}
+Content-Type: application/json
+Authorization: bearer invalid_token
+
+{
+  "title": "Invalid",
+  "author": "Invalid",
+  "url": "invalid.com",
+  "likes": "0"
+}
+
+### Get users
+GET {{users_endpoint}}
+
+### Add user
+POST {{users_endpoint}}
 Content-Type: application/json
 
 {
-  "title": "Test",
-  "author": "Jason",
-  "url": "jason.com",
-  "likes": "0"
+  "username": "ethanweiner20",
+  "name": "Ethan",
+  "password": "Password"
+}
+
+### Valid login
+POST {{login_endpoint}}
+Content-Type: application/json
+
+{
+  "username": "ethanweiner20",
+  "password": "Password"
+}
+
+### Invalid login credentials
+POST {{login_endpoint}}
+Content-Type: application/json
+
+{
+  "username": "ethanweiner20",
+  "password": "IncorrectPassword"
 }
