@@ -37,15 +37,25 @@ BlogsRouter.delete('/:id', async (request, response) => {
 });
 
 BlogsRouter.put('/:id', async (request, response) => {
+  const { title, author, url, likes } = request.body;
+  const { user } = request;
+
+  if (!user) {
+    return response
+      .status(401)
+      .json({ error: 'Must be authenticated to update blogs' });
+  }
+
   const newBlog = await Blog.findByIdAndUpdate(
     request.params.id,
-    request.body,
+    { title, author, url, likes, user: user.id },
     {
       new: true,
       runValidators: true,
     }
   );
-  response.status(200).json(newBlog);
+
+  return response.status(200).json(newBlog);
 });
 
 module.exports = BlogsRouter;

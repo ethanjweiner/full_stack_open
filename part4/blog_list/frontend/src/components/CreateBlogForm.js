@@ -1,13 +1,13 @@
 const { useState } = require('react');
 
-const CreateBlogForm = ({ onSubmit }) => {
+const CreateBlogForm = ({ onCreate }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ title, author, url });
+    onCreate({ title, author, url });
     setTitle('');
     setAuthor('');
     setUrl('');

@@ -1,11 +1,12 @@
 import './styles.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
 import Login from './components/Login';
 import Alert from './components/Alert';
 import CreateBlogForm from './components/CreateBlogForm';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import Togglable from './components/Togglable';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -20,6 +21,9 @@ const App = () => {
     const savedUser = JSON.parse(window.localStorage.getItem('user'));
     if (savedUser) loadUser(savedUser);
   }, []);
+
+  // Sort blogs
+  blogs.sort((blog1, blog2) => blog2.likes - blog1.likes);
 
   const loadUser = (userData) => {
     setUser(userData);
@@ -62,6 +66,7 @@ const App = () => {
         message: 'added blog',
         type: 'success',
       });
+      togglableBlogForm.current.setVisible(false);
     } catch (error) {
       displayNotification({
         message: error.message,
@@ -70,11 +75,45 @@ const App = () => {
     }
   };
 
+  const likeBlog = async (blogData) => {
+    const { id } = blogData;
+
+    try {
+      const newBlog = await blogService.update(blogData.id, {
+        ...blogData,
+        likes: blogData.likes + 1,
+      });
+      setBlogs(blogs.map((blog) => (blog.id === id ? newBlog : blog)));
+      displayNotification({
+        message: 'updated blog',
+        type: 'success',
+      });
+    } catch (error) {
+      displayNotification({
+        message: error.message,
+        type: 'error',
+      });
+    }
+  };
+
+  const togglableBlogForm = useRef();
+
+  const blogsList = (
+    <div>
+      {blogs.map((blog) => (
+        <Blog key={blog.id} blog={blog} onLike={() => likeBlog(blog)} />
+      ))}
+    </div>
+  );
+
   return (
     <div>
       <Alert alert={alert} />
       {user === null ? (
-        <Login onLogin={login} />
+        <div>
+          <Login onLogin={login} />
+          {blogsList}
+        </div>
       ) : (
         <div>
           <h2>blogs</h2>
@@ -82,11 +121,11 @@ const App = () => {
             {user.name} logged in<button onClick={logout}>Logout</button>
           </p>
 
-          <CreateBlogForm onSubmit={addBlog} />
+          <Togglable buttonName="new blog" ref={togglableBlogForm}>
+            <CreateBlogForm onCreate={addBlog} />
+          </Togglable>
 
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
+          {blogsList}
         </div>
       )}
     </div>
