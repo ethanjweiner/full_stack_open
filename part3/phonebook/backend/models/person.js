@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
 
 const personSchema = new mongoose.Schema({
@@ -11,7 +13,7 @@ const personSchema = new mongoose.Schema({
     minLength: 8,
     required: [true, 'Person phone number required'],
     validate: {
-      validator: function (input) {
+      validator(input) {
         return /^\d{2,3}-\d+$/.test(input);
       },
       message: (props) => `${props.value} is not a valid phone number!`,

@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import personsService from './services/persons';
 
-const App = () => {
+function App() {
   // State
   const [nameFilter, setNewNameFilter] = useState('');
   const [newName, setNewName] = useState('');
@@ -10,12 +9,12 @@ const App = () => {
   const [persons, setPersons] = useState([]);
   const [message, setMessage] = useState(null);
 
-  const shownPersons = persons.filter(({ name }) => {
-    return name.toLowerCase().includes(nameFilter.toLowerCase());
-  });
+  const shownPersons = persons.filter(({ name }) =>
+    name.toLowerCase().includes(nameFilter.toLowerCase())
+  );
 
   const findPersonByName = (name) =>
-    persons.find((person) => name === person.name);
+    persons.find((person) => name == person.name);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,36 +108,37 @@ const App = () => {
       <Persons persons={shownPersons} onDelete={deletePerson} />
     </div>
   );
-};
+}
 
-const Filter = ({ name, onNewNameFilter }) => (
-  <div>
-    filter shown with:{' '}
-    <input value={name} onChange={(e) => onNewNameFilter(e.target.value)} />
-  </div>
-);
+function Filter({ name, onNewNameFilter }) {
+  return (
+    <div>
+      filter shown with:{' '}
+      <input value={name} onChange={(e) => onNewNameFilter(e.target.value)} />
+    </div>
+  );
+}
 
-const PersonForm = ({
-  newName,
-  newNumber,
-  onNewName,
-  onNewNumber,
-  onSubmit,
-}) => (
-  <form onSubmit={onSubmit}>
-    <div>
-      name:{' '}
-      <input value={newName} onChange={(e) => onNewName(e.target.value)} />
-    </div>
-    <div>
-      number:{' '}
-      <input value={newNumber} onChange={(e) => onNewNumber(e.target.value)} />
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-);
+function PersonForm({ newName, newNumber, onNewName, onNewNumber, onSubmit }) {
+  return (
+    <form onSubmit={onSubmit}>
+      <div>
+        name:{' '}
+        <input value={newName} onChange={(e) => onNewName(e.target.value)} />
+      </div>
+      <div>
+        number:{' '}
+        <input
+          value={newNumber}
+          onChange={(e) => onNewNumber(e.target.value)}
+        />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  );
+}
 
 const Persons = ({ persons, onDelete }) =>
   persons.map((person) => (
@@ -149,19 +149,21 @@ const Persons = ({ persons, onDelete }) =>
     />
   ));
 
-const Person = ({ person, onDelete }) => (
-  <div>
-    {person.name} {person.number}
-    <button onClick={onDelete}>delete</button>
-  </div>
-);
+function Person({ person, onDelete }) {
+  return (
+    <div>
+      {person.name} {person.number}
+      <button onClick={onDelete}>delete</button>
+    </div>
+  );
+}
 
-const Notification = ({ message }) => {
+function Notification({ message }) {
   if (message === null) {
     return null;
   }
 
   return <div className={`notification ${message.type}`}>{message.text}</div>;
-};
+}
 
 export default App;

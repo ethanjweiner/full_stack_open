@@ -1,8 +1,13 @@
 const express = require('express');
+
 const app = express();
 const Person = require('./models/person');
 const PersonRouter = require('./controllers/persons');
-const { unknownEndpoint, errorHandler, requestLogger } = require('./utils/middleware');
+const {
+  unknownEndpoint,
+  errorHandler,
+  requestLogger,
+} = require('./utils/middleware');
 
 // Middleware
 app.use(express.json());
@@ -23,7 +28,6 @@ app.get('/info', (_, response, next) => {
     })
     .catch(next);
 });
-
 
 app.use(unknownEndpoint);
 app.use(errorHandler);
