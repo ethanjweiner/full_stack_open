@@ -23,11 +23,13 @@ const Blog = ({ blog, onLike }) => {
     <div style={blogStyle}>
       {blog.title} {blog.author}{' '}
       <button onClick={toggleDetailsVisible}>{toggleButtonText}</button>
-      <div style={detailsStyle}>
+      <div data-testid="details" style={detailsStyle}>
         <div>{blog.url}</div>
         <div>
           likes {blog.likes}
-          <button onClick={onLike}>like</button>
+          <button data-testid="like-button" onClick={onLike}>
+            like
+          </button>
         </div>
         <div>{blog.author}</div>
       </div>
