@@ -13,6 +13,11 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [alert, setAlert] = useState(null);
 
+  const loadUser = (userData) => {
+    setUser(userData);
+    blogService.setToken(userData.token);
+  };
+
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -24,11 +29,6 @@ const App = () => {
 
   // Sort blogs
   blogs.sort((blog1, blog2) => blog2.likes - blog1.likes);
-
-  const loadUser = (userData) => {
-    setUser(userData);
-    blogService.setToken(userData.token);
-  };
 
   const displayNotification = (alert) => {
     setAlert(alert);
@@ -99,7 +99,7 @@ const App = () => {
   const togglableBlogForm = useRef();
 
   const blogsList = (
-    <div>
+    <div className="blog-list">
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} onLike={() => likeBlog(blog)} />
       ))}

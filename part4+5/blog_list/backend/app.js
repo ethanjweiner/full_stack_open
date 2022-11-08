@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const BlogsRouter = require('./controllers/blogs');
 const UsersRouter = require('./controllers/users');
 const LoginRouter = require('./controllers/login');
+const TestingRouter = require('./controllers/testing');
 const config = require('./utils/config');
 const middleware = require('./utils/middleware');
 
@@ -19,6 +20,10 @@ app.use(middleware.loadUser);
 app.use('/api/login', LoginRouter);
 app.use('/api/users', UsersRouter);
 app.use('/api/blogs', BlogsRouter);
+
+if (config.NODE_ENV === 'test') {
+  app.use('/api/testing', TestingRouter);
+}
 
 app.use(middleware.errorHandler);
 

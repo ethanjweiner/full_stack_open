@@ -20,7 +20,7 @@ const Blog = ({ blog, onLike }) => {
   };
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} class="blog">
       {blog.title} {blog.author}{' '}
       <button onClick={toggleDetailsVisible}>{toggleButtonText}</button>
       <div data-testid="details" style={detailsStyle}>

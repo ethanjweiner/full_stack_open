@@ -1,4 +1,4 @@
-const { useState } = require('react');
+import { useState } from 'react';
 
 const CreateBlogForm = ({ onCreate }) => {
   const [title, setTitle] = useState('');
@@ -22,6 +22,7 @@ const CreateBlogForm = ({ onCreate }) => {
           <input
             type="text"
             value={title}
+            name="title"
             placeholder="title"
             onChange={({ target }) => setTitle(target.value)}
           />
@@ -30,6 +31,7 @@ const CreateBlogForm = ({ onCreate }) => {
           <label>author:</label>
           <input
             type="text"
+            name="author"
             value={author}
             placeholder="author"
             onChange={({ target }) => setAuthor(target.value)}
@@ -39,6 +41,7 @@ const CreateBlogForm = ({ onCreate }) => {
           <label>url:</label>
           <input
             type="text"
+            name="url"
             value={url}
             placeholder="url"
             onChange={({ target }) => setUrl(target.value)}

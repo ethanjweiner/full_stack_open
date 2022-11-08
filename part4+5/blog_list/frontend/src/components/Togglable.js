@@ -5,11 +5,9 @@ const Togglable = forwardRef((props, refs) => {
 
   const [isVisible, setVisible] = useState(false);
 
-  useImperativeHandle(refs, () => {
-    return {
-      setVisible,
-    };
-  });
+  useImperativeHandle(refs, () => ({
+    setVisible,
+  }));
 
   if (isVisible) {
     return (
@@ -18,9 +16,8 @@ const Togglable = forwardRef((props, refs) => {
         <button onClick={() => setVisible(false)}>cancel</button>
       </div>
     );
-  } else {
-    return <button onClick={() => setVisible(true)}>{buttonName}</button>;
   }
+  return <button onClick={() => setVisible(true)}>{buttonName}</button>;
 });
 
 export default Togglable;
