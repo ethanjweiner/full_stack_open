@@ -10,7 +10,9 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(initializeAnecdotes());
+    dispatch(initializeAnecdotes()).then(() => {
+      console.log('anecdotes initialized!');
+    });
   });
 
   return (
