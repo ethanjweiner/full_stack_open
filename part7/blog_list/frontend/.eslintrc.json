@@ -1,0 +1,36 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest/globals": true,
+    "cypress/globals": "true"
+  },
+  "extends": [
+    "eslint:recommended",
+    "airbnb",
+    "airbnb/hooks",
+    "plugin:jsx-a11y/recommended",
+    "plugin:jest/recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react", "jest", "cypress"],
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "off",
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/function-component-definition": "off",
+    "react/button-has-type": "off",
+    "react/jsx-filename-extension": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "no-param-reassign": ["error", { "props": false }],
+    "no-debugger": "warn"
+  }
+}
