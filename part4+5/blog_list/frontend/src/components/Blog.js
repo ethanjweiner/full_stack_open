@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -20,7 +21,7 @@ const Blog = ({ blog, onLike }) => {
   };
 
   return (
-    <div style={blogStyle} class="blog">
+    <div style={blogStyle} className="blog">
       {blog.title} {blog.author}{' '}
       <button onClick={toggleDetailsVisible}>{toggleButtonText}</button>
       <div data-testid="details" style={detailsStyle}>

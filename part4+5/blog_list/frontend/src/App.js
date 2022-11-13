@@ -19,7 +19,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogData) => setBlogs(blogData));
   }, []);
 
   useEffect(() => {
@@ -30,8 +30,8 @@ const App = () => {
   // Sort blogs
   blogs.sort((blog1, blog2) => blog2.likes - blog1.likes);
 
-  const displayNotification = (alert) => {
-    setAlert(alert);
+  const displayNotification = (message) => {
+    setAlert(message);
     setTimeout(() => setAlert(null), 5000);
   };
 
@@ -57,6 +57,8 @@ const App = () => {
     window.localStorage.removeItem('user');
     setUser(null);
   };
+
+  const togglableBlogForm = useRef();
 
   const addBlog = async (blogData) => {
     try {
@@ -95,8 +97,6 @@ const App = () => {
       });
     }
   };
-
-  const togglableBlogForm = useRef();
 
   const blogsList = (
     <div className="blog-list">

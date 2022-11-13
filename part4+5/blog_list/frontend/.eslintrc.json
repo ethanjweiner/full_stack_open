@@ -26,6 +26,9 @@
     "no-console": "off",
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
-    "react/function-component-definition": "off"
+    "react/function-component-definition": "off",
+    "react/button-has-type": "off",
+    "react/jsx-filename-extension": "off",
+    "jsx-a11y/label-has-associated-control": "off"
   }
 }
