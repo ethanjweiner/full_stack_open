@@ -58,4 +58,17 @@ BlogsRouter.put('/:id', async (request, response) => {
   return response.status(200).json(newBlog);
 });
 
+BlogsRouter.post('/:id/comments', async (request, response) => {
+  // Require user to be authenticated to comment?
+
+  const blogId = request.params.id;
+  const { comment } = request.body;
+
+  const blogToUpdate = await Blog.findById(blogId);
+  blogToUpdate.comments = [...blogToUpdate.comments, comment];
+  const blogWithComment = await blogToUpdate.save();
+
+  return response.status(201).json(blogWithComment);
+});
+
 module.exports = BlogsRouter;

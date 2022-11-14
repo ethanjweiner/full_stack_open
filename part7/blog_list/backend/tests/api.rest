@@ -38,8 +38,8 @@ POST {{users_endpoint}}
 Content-Type: application/json
 
 {
-  "username": "ethanweiner20",
-  "name": "Ethan",
+  "username": "graceweiner20",
+  "name": "Grace",
   "password": "Password"
 }
 
@@ -59,4 +59,12 @@ Content-Type: application/json
 {
   "username": "ethanweiner20",
   "password": "IncorrectPassword"
+}
+
+### Comment creation
+POST {{blogs_endpoint}}/63712bb901231d375915bcef/comments
+Content-Type: application/json
+
+{
+  "comment": "My ANOTHER awesome comment on blog 1!"
 }

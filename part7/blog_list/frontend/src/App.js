@@ -1,22 +1,29 @@
 import './styles.css';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Login from './components/Login';
+import { Routes, Route } from 'react-router-dom';
 import Alert from './components/Alert';
-import CreateBlogForm from './components/CreateBlogForm';
-import Togglable from './components/Togglable';
 import { initializeBlogs } from './store/blogs';
-import BlogList from './components/BlogList';
-import { logoutUser, tryLoadUser } from './store/user';
+import { initializeUsers } from './store/users';
+import { tryLoadUser } from './store/user';
+import BlogsView from './views/BlogsView';
+import UsersView from './views/UsersView';
+import UserView from './views/UserView';
+import BlogView from './views/BlogView';
+import Login from './components/Login';
+import NavigationMenu from './components/NavigationMenu';
 
 const App = () => {
   const dispatch = useDispatch();
 
-  const activeUser = useSelector((state) => state.user);
-
   // Initialize blogs in store
   useEffect(() => {
     dispatch(initializeBlogs());
+  }, [dispatch]);
+
+  // Initialize users in store
+  useEffect(() => {
+    dispatch(initializeUsers());
   }, [dispatch]);
 
   // Load user on load
@@ -24,36 +31,20 @@ const App = () => {
     dispatch(tryLoadUser());
   }, [dispatch]);
 
-  // Blog form visibility
-  const togglableBlogForm = useRef();
-
-  const setBlogFormVisibility = (visibility) => {
-    togglableBlogForm.current.setVisible(visibility);
-  };
+  const activeUser = useSelector((state) => state.user);
 
   return (
     <div>
       <Alert />
-      {activeUser === null ? (
-        <div>
-          <Login />
-          <BlogList />
-        </div>
-      ) : (
-        <div>
-          <h2>blogs</h2>
-          <p>
-            {activeUser.name} logged in
-            <button onClick={() => dispatch(logoutUser())}>Logout</button>
-          </p>
-
-          <Togglable buttonName="new blog" ref={togglableBlogForm}>
-            <CreateBlogForm onCreate={() => setBlogFormVisibility(false)} />
-          </Togglable>
-
-          <BlogList />
-        </div>
-      )}
+      {activeUser && <NavigationMenu />}
+      <h2>blog app</h2>
+      {activeUser === null && <Login />}
+      <Routes>
+        <Route path="/" element={<BlogsView />} />
+        <Route path="/blogs/:id" element={<BlogView />} />
+        <Route path="/users" element={<UsersView />} />
+        <Route path="/users/:id" element={<UserView />} />
+      </Routes>
     </div>
   );
 };

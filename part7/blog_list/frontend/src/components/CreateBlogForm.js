@@ -1,6 +1,5 @@
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import { notify } from '../store/notification';
 import { addBlog } from '../store/blogs';
 
 const CreateBlogForm = ({ onCreate }) => {
