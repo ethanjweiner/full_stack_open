@@ -57,38 +57,4 @@ function computeRating(average: number, target: number): FullRating {
   }
 }
 
-// Executing
-
-interface CalculatorArgs {
-  dailyHours: Array<number>;
-  target: number;
-}
-
-const parseArguments = (args: Array<string>): CalculatorArgs => {
-  if (args.length < 2) {
-    throw new Error('Must supply at least two arguments');
-  }
-
-  const numberArgs = args.map((arg) => Number(arg));
-
-  if (numberArgs.some((arg) => Number.isNaN(arg))) {
-    throw new Error('Some arguments were not valid numbers');
-  }
-
-  const [target, ...dailyHours] = numberArgs;
-
-  return {
-    dailyHours,
-    target,
-  };
-};
-
-try {
-  const args = process.argv.slice(2);
-  const { dailyHours, target } = parseArguments(args);
-  console.log(calculateExercises(dailyHours, target));
-} catch (error: unknown) {
-  if (error instanceof Error) {
-    console.log('Error: ', error.message);
-  }
-}
+export default calculateExercises;
