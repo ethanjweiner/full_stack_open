@@ -1,0 +1,37 @@
+### Retrieve all patients
+GET http://localhost:3001/api/patients
+
+### Add patient
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "Ethan Weiner",
+  "dateOfBirth": "03-19-2002",
+  "ssn": "SSN",
+  "gender": "male",
+  "occupation": "SWE"
+}
+
+### Add invalid patient
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "Ethan Weiner",
+  "dateOfBirth": "03-19-2002",
+  "ssn": "SSN",
+  "gender": 55,
+  "occupation": "SWE"
+}
+
+### Add invalid patient 2
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "Ethan Weiner",
+  "ssn": "SSN",
+  "gender": "male",
+  "occupation": "SWE"
+}
