@@ -1,6 +1,12 @@
 ### Retrieve all patients
 GET http://localhost:3001/api/patients
 
+### Get one patient
+GET http://localhost:3001/api/patients/d2773822-f723-11e9-8f0b-362b9e155667
+
+### Get another patient
+GET http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667
+
 ### Add patient
 POST http://localhost:3001/api/patients
 Content-Type: application/json

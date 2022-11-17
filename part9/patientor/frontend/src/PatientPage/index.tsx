@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import EntryComponent from "../components/Entry";
 import { apiBaseUrl } from "../constants";
 import { setPatient, useStateValue } from "../state";
 import { Patient } from "../types";
@@ -31,7 +32,7 @@ const usePatient = (id: string) => {
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
-
+  
   if (!id) {
     throw new Error('No id given');
   }
@@ -41,12 +42,16 @@ const PatientPage = () => {
   if (patient === null) {
     return null;
   }
-
+  
   return (
     <div>
       <h2>{patient.name}</h2>
       <div>ssn: {patient.ssn}</div>
       <div>occupation: {patient.occupation}</div>
+      <h3>entries</h3>
+      {patient.entries.map(entry => (
+        <EntryComponent key={entry.id} entry={entry} />
+      ))}
     </div>
   );
 };

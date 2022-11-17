@@ -1,8 +1,8 @@
-import patientsData from '../data/patients.json';
+import patientsData from '../../data/patients';
 import { Patient, PatientEntry, PublicPatient } from '../types';
 import { v1 as uuid } from 'uuid';
 
-const patients: Array<Patient> = patientsData as Array<Patient>;
+const patients: Array<Patient> = patientsData;
 
 function getAll(): Array<PublicPatient> {
   return patients.map((patient) => ({
