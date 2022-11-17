@@ -1,10 +1,10 @@
 import patientsData from '../data/patients.json';
-import { Patient, PatientEntry, PatientPublic } from '../types';
+import { Patient, PatientEntry, PublicPatient } from '../types';
 import { v1 as uuid } from 'uuid';
 
 const patients: Array<Patient> = patientsData as Array<Patient>;
 
-function getAll(): Array<PatientPublic> {
+function getAll(): Array<PublicPatient> {
   return patients.map((patient) => ({
     id: patient.id,
     name: patient.name,
@@ -14,11 +14,16 @@ function getAll(): Array<PatientPublic> {
   }));
 }
 
+function getById(id: string): Patient | undefined {
+  return patients.find((patient) => patient.id === id);
+}
+
 function add(patient: PatientEntry) {
   const id: string = uuid();
 
   const newPatient = {
     id,
+    entries: [],
     ...patient,
   };
 
@@ -26,4 +31,4 @@ function add(patient: PatientEntry) {
   return newPatient;
 }
 
-export default { getAll, add };
+export default { getAll, getById, add };
