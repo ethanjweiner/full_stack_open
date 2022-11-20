@@ -1,5 +1,5 @@
 import { useStateValue } from "../state";
-import { Diagnosis, Entry } from "../types";
+import { Diagnosis, Entry, EntryType } from "../types";
 import { assertNever } from "../utils";
 import HealthRatingBar from "./HealthRatingBar";
 
@@ -21,18 +21,18 @@ const EntryComponent = ({ entry }: { entry: Entry }) => {
   let entryInformation;
 
   switch (entry.type) {
-    case "Hospital":
+    case EntryType.Hospital:
       entryInformation = (<div>
         <h4>Discharge</h4>
         <div>{entry.discharge.date} {entry.discharge.criteria}</div>
       </div>);
       break;
-    case "HealthCheck":
+    case EntryType.HealthCheck:
       entryInformation = (<div>
         <HealthRatingBar rating={entry.healthCheckRating} showText={false}/>
       </div>);
       break;
-    case "OccupationalHealthcare":
+    case EntryType.OccupationalHealthCare:
       entryInformation = <div>Employer: {entry.employerName}</div>;
       break;
     default:

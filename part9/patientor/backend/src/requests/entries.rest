@@ -1,0 +1,43 @@
+### Post a Hospital Entry
+POST http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+  "type": "Hospital",
+  "description": "A hospital entry",
+  "date": "11/17/2022",
+  "specialist": "Weins MD",
+  "diagnosesCodes": ["J10.1", "Z57.1"],
+  "discharge": {
+    "date": "11/20/2022",
+    "criteria": "He good now"
+  }
+}
+
+### Post an OccupationalHealthcare Entry
+POST http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+  "type": "OccupationalHealthcare",
+  "description": "A OccupationalHealthcare entry",
+  "date": "11/17/2022",
+  "specialist": "Weins MD",
+  "employerName": "Weins LLC",
+  "sickLeave": {
+    "startDate": "11/01/2022",
+    "endDate": "12/01/2022"
+  }
+}
+
+### Post a HealthCheck Entry
+POST http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+  "type": "HealthCheck",
+  "description": "A health check entry",
+  "date": "11/17/2022",
+  "specialist": "Weins MD",
+  "healthCheckRating": 1
+}

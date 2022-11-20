@@ -1,5 +1,7 @@
 import express = require('express');
 import patientsService from '../services/patients';
+import entriesService from '../services/entries';
+import { EntryInput } from '../types';
 import { toPatientEntry } from '../utils';
 
 const PatientsRouter = express.Router();
@@ -23,6 +25,21 @@ PatientsRouter.post('/', (req, res) => {
     const patient = toPatientEntry(req.body);
     const newPatient = patientsService.add(patient);
     return res.json(newPatient);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(400).send({ error: error.message });
+    }
+
+    return res.status(400).send({ error: 'Generic error' });
+  }
+});
+
+PatientsRouter.post('/:id/entries', (req, res) => {
+  try {
+    // Parse later
+    const entryInput = req.body as EntryInput;
+    const newEntry = entriesService.add(entryInput, req.params.id);
+    return res.json(newEntry);
   } catch (error: unknown) {
     if (error instanceof Error) {
       return res.status(400).send({ error: error.message });

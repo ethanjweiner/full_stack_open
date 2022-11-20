@@ -13,6 +13,12 @@ export const toPatientEntry = (data: any): PatientEntry => {
   return patientEntry;
 };
 
+// export const toEntryInput = (data: any): EntryInput => {
+//   const entryInput: EntryInput = {
+
+//   }
+// }
+
 const parseString = (text: unknown): string => {
   if (!text || !isString(text)) {
     throw new Error('Validation error');

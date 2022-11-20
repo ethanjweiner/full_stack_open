@@ -11,6 +11,7 @@ function getAll(): Array<PublicPatient> {
     dateOfBirth: patient.dateOfBirth,
     gender: patient.gender,
     occupation: patient.occupation,
+    entries: patient.entries,
   }));
 }
 
