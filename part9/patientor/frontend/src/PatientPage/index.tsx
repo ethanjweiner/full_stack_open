@@ -2,11 +2,15 @@ import { Button } from "@material-ui/core";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AddEntryForm, { EntryFormValues } from "../AddEntryForm/AddEntryForm";
+import AddEntryForm from "../AddEntryForm/AddEntryForm";
 import EntryComponent from "../components/Entry";
 import { apiBaseUrl } from "../constants";
 import { addEntry, setPatient, useStateValue } from "../state";
-import { Entry, Patient } from "../types";
+import { Entry, EntryFormFields, EntryType, Patient } from "../types";
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
 
 const getPatient = async (id: string): Promise<Patient> => {
   const response = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
@@ -51,13 +55,33 @@ const PatientPage = () => {
     return null;
   }
 
-  const submitNewEntry = async (values: EntryFormValues) => {
+  const cleanEntry = (values: EntryFormFields): UnionOmit<Entry, 'id'> => {
+    const entry = {
+      description: values.description,
+      date: values.date,
+      specialist: values.specialist,
+      diagnosisCodes: values.diagnosisCodes
+    };
+
+    switch (values.type) {
+      case EntryType.HealthCheck:
+        return { ...entry, type: EntryType.HealthCheck, healthCheckRating: values.healthCheckRating };
+      case EntryType.OccupationalHealthcare:
+        return { ...entry, type: EntryType.OccupationalHealthcare, employerName: values.employerName, sickLeave: values.sickLeave };
+      case EntryType.Hospital:
+        return { ...entry, type: EntryType.Hospital, discharge: values.discharge };
+      default: 
+        throw new Error('Invalid entry type');
+    }
+  };
+
+  const submitNewEntry = async (values: EntryFormFields) => {
     try {
-      const { data: newEntry } = await axios.post<Entry>(
+      const { data: entry } = await axios.post<Entry>(
         `${apiBaseUrl}/patients/${patient.id}/entries`,
-        values
+        cleanEntry(values)
       );
-      dispatch(addEntry(patient.id, newEntry));
+      dispatch(addEntry(patient.id, entry));
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
         console.error(e?.response?.data || "Unrecognized axios error");

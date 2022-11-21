@@ -2,19 +2,12 @@ import { Grid, Button } from "@material-ui/core";
 import { Field, Formik, Form } from "formik";
 
 import { TextField, SelectField, EntryTypeOption } from "../components/FormField";
-import { Entry, EntryType, HealthCheckRating } from "../types";
+import { EntryFormFields, EntryType, HealthCheckRating } from "../types";
 import { useStateValue } from "../state";
 import { DiagnosisSelection, HealthCheckRatingOption } from "../components/FormField";
-import { useState } from "react";
-
-type UnionOmit<T, K extends string | number | symbol> = T extends unknown
-  ? Omit<T, K>
-  : never;
   
-export type EntryFormValues = UnionOmit<Entry, 'id'>;
-
 interface Props {
-  onSubmit: (values: EntryFormValues) => void;
+  onSubmit: (values: EntryFormFields) => void;
   onCancel: () => void;
 }
 
@@ -31,42 +24,31 @@ const entryTypeOptions: EntryTypeOption[] = [
   { value: EntryType.OccupationalHealthcare, label: EntryType.OccupationalHealthcare },
 ];
 
-const initialValues = (entryType: EntryType): EntryFormValues => {
-  const baseValues = {
-    description: "",
-    date: "",
-    specialist: "",
-    diagnosisCodes: [],
-  };
-
-  switch (entryType) {
-    case EntryType.HealthCheck:
-      return {
-        ...baseValues,
-        type: EntryType.HealthCheck,
-        healthCheckRating: HealthCheckRating.Healthy,
-      };
-    default:
-      throw new Error('Invalid entry type in entry form');
+const initialValues: EntryFormFields = {
+  type: EntryType.HealthCheck,
+  description: "",
+  date: "",
+  specialist: "",
+  diagnosisCodes: [],
+  healthCheckRating: HealthCheckRating.Healthy,
+  discharge: {
+    date: '',
+    criteria: ''
+  },
+  employerName: '',
+  sickLeave: {
+    startDate: '',
+    endDate: ''
   }
 };
 
 const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
   const [{ diagnoses }] = useStateValue();
 
-  // Improvement
-  // - Need to define some initialValues
-  // - initialValues are conditional to the current entry type
-  // - Options:
-  // 1. Separate forms per entry type
-  // 2. Same form, but conditionally re-render when new entry type is selected (use extranl entry type control)
-  // 2. Create a separate type for initial values (problem: then initival values wouldn't be in line w/ form returned values)
-  // 3. Create an accomodating form that excepts the union of ALL Entry types to be submitted, and filter out unneedeed fields in top-level `onSubmit`
-  const [entryType] = useState(EntryType.HealthCheck);
-
   return (
     <Formik
-      initialValues={initialValues(entryType)}
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      initialValues={initialValues}
       onSubmit={onSubmit}
       validate={values => {
         const requiredError = "Field is required";
@@ -82,6 +64,12 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         }
         if (!values.specialist) {
           errors.specialist = requiredError;
+        }
+        if (values.type === EntryType.HealthCheck && !values.healthCheckRating) {
+          errors.healthCheckRating = requiredError;
+        }
+        if (values.type === EntryType.OccupationalHealthcare && !values.employerName) {
+          errors.employerName = requiredError;
         }
         return errors;
       }}
@@ -108,6 +96,10 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
               <Field label="Discharge date" placeholder="Discharge date" name="discharge.date" component={TextField} />    
               <Field label="Discharge criteria" placeholder="Discharge criteria" name="discharge.criteria" component={TextField} />    
             </div>
+          )}
+
+          {values.type === EntryType.OccupationalHealthcare && (
+            <Field label="Employer Name" placeholder="Employer Name" name="employerName" component={TextField} />
           )}
           
           <Grid>
