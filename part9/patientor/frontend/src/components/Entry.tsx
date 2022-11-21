@@ -32,7 +32,7 @@ const EntryComponent = ({ entry }: { entry: Entry }) => {
         <HealthRatingBar rating={entry.healthCheckRating} showText={false}/>
       </div>);
       break;
-    case EntryType.OccupationalHealthCare:
+    case EntryType.OccupationalHealthcare:
       entryInformation = <div>Employer: {entry.employerName}</div>;
       break;
     default:

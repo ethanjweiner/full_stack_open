@@ -7,7 +7,7 @@ import {
   TextField as TextFieldMUI,
   Typography,
 } from "@material-ui/core";
-import { Diagnosis, Gender, HealthCheckRating } from "../types";
+import { Diagnosis, EntryType, Gender, HealthCheckRating } from "../types";
 import { InputLabel } from "@material-ui/core";
 import Input from '@material-ui/core/Input';
 
@@ -22,7 +22,12 @@ export type HealthCheckRatingOption = {
   label: string;
 };
 
-type Option = GenderOption | HealthCheckRatingOption;
+export type EntryTypeOption = {
+  value: EntryType;
+  label: string;
+};
+
+type Option = GenderOption | HealthCheckRatingOption | EntryTypeOption;
 
 // props for select field component
 type SelectFieldProps = {
